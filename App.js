@@ -13,7 +13,7 @@ const HelloWorldSceneAR = () => {
   function onInitialized(state, reason) {
     console.log("guncelleme", state, reason);
     if (state === ViroTrackingStateConstants.TRACKING_NORMAL) {
-      setText("Hello World!");
+      setText("Hello Qasim!");
     } else if (state === ViroTrackingStateConstants.TRACKING_UNAVAILABLE) {
       // Handle loss of tracking
     }
@@ -53,3 +53,32 @@ var styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+
+// import { StatusBar } from "expo-status-bar";
+// import { StyleSheet, View } from "react-native";
+// import MapView from "react-native-maps";
+
+// export default function App(){
+//   return (
+//     <View style={styles.container}>
+//       <MapView style={styles.map}>
+//       </MapView>
+//       <StatusBar style="auto"/>
+//     </View>
+//   )
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent:'center'
+
+//   },
+//   map: {
+//     width:'100%',
+//     height:'100%'
+//   }
+// })
