@@ -1,23 +1,9 @@
-# Expo Starter Kit (JavaScript)
+# TouchGrass
+
+TouchGrass is a mobile application designed to help users reconnect with nature and improve their mental well-being by encouraging outdoor activities. Whether you're looking to explore nearby parks, go for a hike, or simply enjoy some time outdoors.
 
 ## Installation
 
-```shell
-npm install
-```
+To get started with TouchGrass, follow these steps:
 
-## Running
-
-```shell
-npm run start`
-```
-
-## Expo Docs
-
-[Expo Docs](https://docs.expo.dev/)
-
-## Need help?
-
-<a href="https://discord.gg/H3ksm5NhzT">
-   <img src="https://discordapp.com/api/guilds/774471080713781259/widget.png?style=banner2" alt="Discord Banner 2"/>
-</a>
+1. **Clone the Repository:** Clone this repository to your local machine using the following command:
