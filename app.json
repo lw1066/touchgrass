@@ -33,7 +33,7 @@
       "package": "com.chilzy.expostarterkit",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyBnqKnj2YFB3QetdSoooaQWfLa7qM3j80M"
+          "apiKey": "@env.API_KEY"
         }
       },
       "permissions": [
