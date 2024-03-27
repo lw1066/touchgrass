@@ -29,7 +29,19 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.chilzy.expostarterkit"
+      "package": "com.chilzy.expostarterkit",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBnqKnj2YFB3QetdSoooaQWfLa7qM3j80M"
+        }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "ACCESS_BACKGROUND_LOCATION",
+        "SCHEDULE_EXACT_ALARM"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -39,7 +51,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "df0be2f6-c4c8-4e93-83da-e90a145969b9"
+        "projectId": "19c06cf5-f774-44f4-af97-0e021a71685f"
       }
     },
     "runtimeVersion": {

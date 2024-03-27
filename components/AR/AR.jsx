@@ -7,6 +7,7 @@ import {
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
+
 const HelloWorldSceneAR = () => {
   const [text, setText] = useState("Initializing AR...");
 
@@ -31,7 +32,7 @@ const HelloWorldSceneAR = () => {
   );
 };
 
-export default () => {
+const AR = () => {
   return (
     <ViroARSceneNavigator
       autofocus={true}
@@ -54,31 +55,4 @@ var styles = StyleSheet.create({
   },
 });
 
-
-// import { StatusBar } from "expo-status-bar";
-// import { StyleSheet, View } from "react-native";
-// import MapView from "react-native-maps";
-
-// export default function App(){
-//   return (
-//     <View style={styles.container}>
-//       <MapView style={styles.map}>
-//       </MapView>
-//       <StatusBar style="auto"/>
-//     </View>
-//   )
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent:'center'
-
-//   },
-//   map: {
-//     width:'100%',
-//     height:'100%'
-//   }
-// })
+export default AR
