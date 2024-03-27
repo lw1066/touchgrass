@@ -4,8 +4,9 @@ import {
   ViroText,
   ViroTrackingStateConstants,
 } from "@viro-community/react-viro";
+import { Link } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 
 const HelloWorldSceneAR = () => {
@@ -34,6 +35,8 @@ const HelloWorldSceneAR = () => {
 
 const AR = () => {
   return (
+    <>
+    
     <ViroARSceneNavigator
       autofocus={true}
       initialScene={{
@@ -41,6 +44,12 @@ const AR = () => {
       }}
       style={styles.f1}
     />
+    <View>
+
+    <Link href="/">Back</Link>
+    </View>
+    </>
+    
   );
 };
 

@@ -2,6 +2,7 @@
   "expo": {
     "name": "expo-starter-kit",
     "slug": "expo-starter-kit",
+    "scheme": "expo-starter-kit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -47,7 +48,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "@viro-community/react-viro"
+      "@viro-community/react-viro",
+      "expo-router"
     ],
     "extra": {
       "eas": {
