@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "expo-starter-kit",
-    "slug": "expo-starter-kit",
-    "scheme": "expo-starter-kit",
+    "name": "TouchGrass",
+    "slug": "touchgrass",
+    "scheme": "touchgrass",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,14 +23,14 @@
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to use your camera",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use your microphone"
       },
-      "bundleIdentifier": "com.chilzy.expostarterkit"
+      "bundleIdentifier": "com.chilzy.touchgrass"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.chilzy.expostarterkit",
+      "package": "com.chilzy.touchgrass",
       "config": {
         "googleMaps": {
           "apiKey": "@env.API_KEY"
@@ -45,7 +45,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       "@viro-community/react-viro",
@@ -53,7 +53,10 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "19c06cf5-f774-44f4-af97-0e021a71685f"
+        "projectId": "aee01e94-bdd5-401c-ad63-dc2966b6f08e"
+      },
+      "router": {
+        "origin": false
       }
     },
     "runtimeVersion": {
