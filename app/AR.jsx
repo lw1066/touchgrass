@@ -6,7 +6,8 @@ import {
 } from "@viro-community/react-viro";
 import { Link } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View , Pressable, Text} from "react-native";
+
 
 
 const HelloWorldSceneAR = () => {
@@ -46,7 +47,10 @@ const AR = () => {
     />
     <View>
 
-    <Link href="/">Back</Link>
+    <Pressable style={styles.button} >
+          <Link href="/map"> <Text>Map</Text> </Link>
+        </Pressable>
+    
     </View>
     </>
     
@@ -62,6 +66,15 @@ var styles = StyleSheet.create({
     textAlignVertical: "center",
     textAlign: "center",
   },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    margin: 10,
+  }
 });
 
 export default AR
