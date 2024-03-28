@@ -24,7 +24,7 @@ const SignUpScreen =() => {
     }
 
     const registerUser = () => {
-        if (!username || !password || email || postCode) {
+        if (!username || !password || !email || !postCode) {
             Alert.alert('Registration failed', 'Please enter a valid username and password', [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ]);

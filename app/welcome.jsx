@@ -24,7 +24,7 @@ const WelcomeScreen = () => {
 
 
   const signInFunc = () => {
-    if (!username || !password ) {
+    if (!email || !password ) {
         Alert.alert('Sign in failed', 'Please enter a valid username and password', [
            
             {text: 'OK', onPress: () => console.log('OK Pressed')},
@@ -36,7 +36,7 @@ const WelcomeScreen = () => {
         return new Promise((resolve,reject) => {
             setTimeout(() => {
                 resolve("login successful")          
-              }, 3000)})
+              }, 1000)})
      }
      
     simulateLogin()

@@ -3,8 +3,28 @@ import { StyleSheet, View, Text , Pressable } from "react-native";
 import MapView, {PROVIDER_GOOGLE} from "react-native-maps";
 import 'expo-dev-client';
 import { Link } from "expo-router";
+import * as Location from 'expo-location'
+import { useEffect, useState } from "react";
 
 const Map = () => {
+  const [userLocation, setUserLocation] = useState()
+
+  const getPermissions = async () => {
+    let {status} = await Location.requestForegroundPermissionsAsync();
+    if(status !== 'granted'){
+      console.log("Please grant location permissions")
+      return
+    }
+
+    let currentLocation = await Location.getCurrentPositionAsync({})
+    setUserLocation(currentLocation)
+    console.log(`Location: ${currentLocation}`)
+
+  }
+
+  useEffect(() => {
+    getPermissions()
+  }, [])
   return (
     <>
     
