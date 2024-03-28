@@ -33,7 +33,7 @@
       "package": "com.chilzy.touchgrass",
       "config": {
         "googleMaps": {
-          "apiKey": "@env.API_KEY"
+          "apiKey": 
         }
       },
       "permissions": [

@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
 import { Link } from "expo-router";
-import Map from "./map";
+import Map from "../components/map";
 
 export default function Page() {
   return (
