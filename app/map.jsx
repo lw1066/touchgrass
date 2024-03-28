@@ -1,76 +1,105 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text , Pressable } from "react-native";
-import MapView, {PROVIDER_GOOGLE} from "react-native-maps";
-import 'expo-dev-client';
+import { StyleSheet, View, Text, Pressable } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import "expo-dev-client";
 import { Link } from "expo-router";
-import * as Location from 'expo-location'
+import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 
 const Map = () => {
-  const [userLocation, setUserLocation] = useState()
+  const [userLocation, setUserLocation] = useState();
+  const [permissionStatus, setPermissionStatus] = useState();
 
-  const getPermissions = async () => {
-    let {status} = await Location.requestForegroundPermissionsAsync();
-    if(status !== 'granted'){
-      console.log("Please grant location permissions")
-      return
+  const getUserLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    setPermissionStatus(status);
+    if (status === "granted") {
+      let currentLocation = await Location.getCurrentPositionAsync();
+      setUserLocation({
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      });
+      console.log("Please grant location permissions");
     }
+  };
 
-    let currentLocation = await Location.getCurrentPositionAsync({})
-    setUserLocation(currentLocation)
-    console.log(`Location: ${currentLocation}`)
-
-  }
+  // const showTrophyLocations = () => {
+  //   return trophies.map((trophy, index) => {
+  //     return(
+  //       <Marker
+  //         key={index}
+  //         coordinate={trophy.location}
+  //         title={trophy.title}
+  //         description={trophy.description}
+  //       />
+  //     )
+  //   })
+  // };
 
   useEffect(() => {
-    getPermissions()
-  }, [])
+    getUserLocation();
+  }, []);
   return (
     <>
-    
-     <View style={styles.container}>
-      <MapView style={styles.map} provider={PROVIDER_GOOGLE}>
-      </MapView>
-      
-    </View>
-    <Pressable style={styles.button} onPress={() => console.log()}>
-          <Link href="/AR">   <Text>Camera</Text> </Link>
-        </Pressable>
+      <View style={styles.container}>
+        {userLocation ? (
+          <MapView
+            style={styles.map}
+            provider={PROVIDER_GOOGLE}
+            initialRegion={{
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+              latitudeDelta: 0.0017,
+              longitudeDelta: 0.001,
+            }}
+          >
+            <Marker coordinate={userLocation} />
+          </MapView>
+        ) : (
+          <Text>
+            Please grant location permissions{"\n"}
+            {"\n"}Let's not wait for the grass to grow...
+          </Text>
+        )}
+      </View>
+      <Pressable style={styles.button} onPress={() => console.log()}>
+        <Link href="/AR">
+          {" "}
+          <Text>Camera</Text>{" "}
+        </Link>
+      </Pressable>
     </>
-    
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent:'center'
-
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   map: {
-    width:'100%',
-    height:'100%'
+    width: "100%",
+    height: "100%",
   },
   button: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 10,
-   
   },
   text: {
     fontSize: 16,
     lineHeight: 21,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     letterSpacing: 0.25,
-    color: 'blue',
-  }
-})
+    color: "blue",
+  },
+});
 
-export default Map
+export default Map;
