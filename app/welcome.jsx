@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import {
-
   TextInput,
   Text,
   View,
@@ -10,52 +9,62 @@ import {
   Animated,
   SafeAreaView,
 } from "react-native";
-import { Link , useRouter } from "expo-router";
-import  styles  from "../styling/styles";
+import { Link, useRouter } from "expo-router";
+import styles from "../styling/styles";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { FIREBASE_AUTH } from "../firebaseConfig";
 
 const WelcomeScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState("");
- 
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
-  const onPressInFunc = () => {
+  const onPressInFunc = () => {};
+
+  const signInFunc = async () => {
+    if (!email || !password) {
+      Alert.alert(
+        "Sign in failed",
+        "Please enter a valid username and password",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const user = await signInWithEmailAndPassword(
+        FIREBASE_AUTH,
+        email,
+        password
+      );
+      if (user) router.push("/map");
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(error.message);
+      setEmail("");
+      setPassword("");
+      // router.push("/welcome");
+      Alert.alert(
+        "Sign in failed",
+        "Please enter a valid username and password",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+      // Handle error
+    }
+    setIsLoading(false);
   };
 
-
-  const signInFunc = () => {
-    if (!email || !password ) {
-        Alert.alert('Sign in failed', 'Please enter a valid username and password', [
-           
-            {text: 'OK', onPress: () => console.log('OK Pressed')},
-          ]);
-        return 
-     }
-     //this will be refractored
-     const simulateLogin = () => {
-        return new Promise((resolve,reject) => {
-            setTimeout(() => {
-                resolve("login successful")          
-              }, 1000)})
-     }
-     
-    simulateLogin()
-    .then((msg) => {
-        console.log(msg);
-        router.push("/map")
-    })
-    .catch((err) => {
-        console.log("log in failed",err);
-    })
-    //this will be refractored
-    
-  }
 
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require("../assets/icon.png")} />
 
       <Text style={styles.title}>Touch Grass</Text>
+
+      {isLoading && <Text>Signing In...</Text>}
+
       <View style={styles.inputView}>
         <TextInput
           style={styles.inputText}
@@ -77,11 +86,22 @@ const WelcomeScreen = () => {
         />
       </View>
 
-      <Pressable  style={({ pressed }) => [{ backgroundColor: pressed ? 'yellow' : 'lightgreen' }, styles.button ]} onPress={signInFunc}>
+      <Pressable
+        style={({ pressed }) => [
+          { backgroundColor: pressed ? "yellow" : "lightgreen" },
+          styles.button,
+        ]}
+        onPress={signInFunc}
+      >
         <Text style={styles.text}>Log in</Text>
       </Pressable>
 
-      <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? 'yellow' : 'lightgreen' }, styles.button ]}>
+      <Pressable
+        style={({ pressed }) => [
+          { backgroundColor: pressed ? "yellow" : "lightgreen" },
+          styles.button,
+        ]}
+      >
         <Link href="/signup">
           <Text style={styles.text}>Sign up </Text>
         </Link>
