@@ -46,7 +46,6 @@ const SignUpScreen = () => {
       Alert.alert("Registration failed", errorMessage);
     }
   };
-
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require("../assets/icon.png")} />

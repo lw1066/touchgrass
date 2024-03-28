@@ -38,14 +38,22 @@
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "FOREGROUND_SERVICE",
-        "ACCESS_BACKGROUND_LOCATION",
-        "SCHEDULE_EXACT_ALARM"
+        "ACCESS_BACKGROUND_LOCATION"
       ]
     },
     "web": {
       "favicon": "./assets/icon.png"
     },
-    "plugins": ["@viro-community/react-viro", "expo-router"],
+    "plugins": [
+      "@viro-community/react-viro",
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "aee01e94-bdd5-401c-ad63-dc2966b6f08e"

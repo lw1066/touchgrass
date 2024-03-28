@@ -51,11 +51,11 @@ const WelcomeScreen = () => {
         "Please enter a valid username and password",
         [{ text: "OK", onPress: () => console.log("OK Pressed") }]
       );
-
       // Handle error
     }
     setIsLoading(false);
   };
+
 
   return (
     <View style={styles.container}>
