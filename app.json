@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -33,7 +31,7 @@
       "package": "com.chilzy.touchgrass",
       "config": {
         "googleMaps": {
-          "apiKey": ""
+          "apiKey": "AIzaSyBl9QI5CFaJt5WvyjqUgB-czsymWpeBFTY"
         }
       },
       "permissions": [
@@ -47,10 +45,7 @@
     "web": {
       "favicon": "./assets/icon.png"
     },
-    "plugins": [
-      "@viro-community/react-viro",
-      "expo-router"
-    ],
+    "plugins": ["@viro-community/react-viro", "expo-router"],
     "extra": {
       "eas": {
         "projectId": "aee01e94-bdd5-401c-ad63-dc2966b6f08e"
