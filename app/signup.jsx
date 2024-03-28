@@ -6,6 +6,8 @@ import  styles  from "../styling/styles";
 const SignUpScreen =() => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [postCode, setPostCode] = useState("");
     const router = useRouter();
 
     const handleAccountCreation = () => {
@@ -22,7 +24,7 @@ const SignUpScreen =() => {
     }
 
     const registerUser = () => {
-        if (!username || !password ) {
+        if (!username || !password || email || postCode) {
             Alert.alert('Registration failed', 'Please enter a valid username and password', [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ]);
@@ -60,6 +62,16 @@ const SignUpScreen =() => {
     <View style={styles.inputView}>
     <TextInput  
      style={styles.inputText}
+        value={email}
+        placeholder={"Enter Email"}
+        placeholderTextColor="#000" 
+        onChangeText={(text) => setEmail(text)}
+        autoCapitalize={"none"}
+      />
+    </View>
+    <View style={styles.inputView}>
+    <TextInput  
+     style={styles.inputText}
         value={username}
         placeholder={"Enter Username"}
         placeholderTextColor="#000" 
@@ -67,6 +79,7 @@ const SignUpScreen =() => {
         autoCapitalize={"none"}
       />
     </View>
+    
     <View style={styles.inputView}>
     <TextInput
      style={styles.inputText}   
@@ -77,6 +90,17 @@ const SignUpScreen =() => {
         onChangeText={(text) => setPassword(text)}
       />
        </View>
+       <View style={styles.inputView}>
+    <TextInput  
+     style={styles.inputText}
+        value={postCode}
+        placeholder={"Enter Post code"}
+        placeholderTextColor="#000" 
+        onChangeText={(text) => setPostCode(text)}
+        autoCapitalize={"none"}
+        maxLength={8}
+      />
+    </View>
       
        <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? 'yellow' : 'lightgreen' }, styles.button ]} onPress={registerUser}>
        <Text style={styles.text}>Sign up</Text>

@@ -14,7 +14,7 @@ import { Link , useRouter } from "expo-router";
 import  styles  from "../styling/styles";
 
 const WelcomeScreen = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState("");
  
@@ -59,10 +59,10 @@ const WelcomeScreen = () => {
       <View style={styles.inputView}>
         <TextInput
           style={styles.inputText}
-          value={username}
-          placeholder={"Enter Username"}
+          value={email}
+          placeholder={"Enter Email"}
           placeholderTextColor={"#000"}
-          onChangeText={(text) => setUsername(text)}
+          onChangeText={(text) => setEmail(text)}
           autoCapitalize={"none"}
         />
       </View>
