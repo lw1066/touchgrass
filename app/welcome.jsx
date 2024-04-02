@@ -20,7 +20,7 @@ const WelcomeScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-  const onPressInFunc = () => {};
+  
 
   const signInFunc = async () => {
     if (!email || !password) {

@@ -1,73 +1,109 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text, Pressable , FlatList } from "react-native";
+import { StyleSheet, View, Text, Pressable  } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import "expo-dev-client";
 import { Link } from "expo-router";
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { SelectList } from 'react-native-dropdown-select-list'
+import { FIREBASE_AUTH , FIREBASE_DB} from "../firebaseConfig";
+import { doc, getDoc, query, where , getDocs, collection} from "firebase/firestore";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 
 const Map = () => {
   const [userLocation, setUserLocation] = useState();
   const [permissionStatus, setPermissionStatus] = useState();
-  const [nearbyPlaces, setNearbyPlaces] = useState([]);
+  const [currentPlaces, setCurrentPlaces] = useState([]);
   
-  const [selected, setSelected] = useState("");
-
-   console.log("select -->",selected);
+  // if (currentPlaces.length > 0) {
+  //   console.log("current places : ",currentPlaces) 
+  // }
 
   
-  const data = [
-      {key:'commercial.supermarket', value:'commercial.supermarket', disabled:false},
-      {key:'catering.restaurant,catering.cafe', value:'catering.restaurant,catering.cafe', disabled:false},
-  ]
- 
- //console.log(userLocation);
-
-  //console.log("this is nearbyPlaces",nearbyPlaces);
-
-  const showPois = () => {
-    return nearbyPlaces.map((place, index) => {
-      return <Marker style={styles.markers} title={place.name} key={index} coordinate={place.location}   pinColor='green'/>
-    });
-  };
-
-  const fetchNearbyPlaces = async (longitude , latitude, categories) => {
-    const apiKey = '8c4b8ef0c8334c7fbd0782c94e1fe1aa'; 
-    
-    var fetch = require('node-fetch');
-    var requestOptions = {
-      method: 'GET',
-    };
-    
-    fetch(`https://api.geoapify.com/v2/places?categories=${categories}&bias=proximity:${longitude},${latitude}&limit=3&apiKey=8c4b8ef0c8334c7fbd0782c94e1fe1aa`, requestOptions)
-    .then(response => response.json())
-      .then((results) => {
-        const data = results;
-       // console.log("api results", data);
-       const placesData = data.features.map(feature => ({
-        name: feature.properties.name,
-        location: {
-          latitude: feature.geometry.coordinates[1],
-          longitude: feature.geometry.coordinates[0]
-        }
-      }));
-      
-      setNearbyPlaces(placesData);
-      })
-     
-  };
 
   useEffect(() => {
-    // const long = -1.6885046;
-    // const lat = 53.8065151
 
-    if (userLocation && selected) {
-      const { latitude, longitude } = userLocation;
-      fetchNearbyPlaces(longitude, latitude, selected);
-    }
-  }, [userLocation, selected]);
+
+
+    const randomIndex = () => {
+      return Math.floor(Math.random() * 100);
+    };
+
+    const fetchNearbyPlaces = async () => {
+      const user = FIREBASE_AUTH.currentUser;
+
+      try {
+        const jsonValue = await AsyncStorage.getItem('cachedPlaces');
+        const actualjsonValue = jsonValue ? JSON.parse(jsonValue) : null;
+        console.log("async stor",actualjsonValue);
+        if (!jsonValue) {
+          const querySnapshot = await getDocs(collection(FIREBASE_DB, "users"));
+
+          querySnapshot.forEach((doc) => {
+            if (user.email === doc.data().email) {
+            const places = doc.data().places
+    
+            
+            setCurrentPlaces(() => {
+              const copyOfPlaces = [...places];
+              const newPlace = copyOfPlaces[randomIndex()];
+              const newPlace2 = copyOfPlaces[randomIndex()];
+              const newPlace3 = copyOfPlaces[randomIndex()];
+    
+              console.log("random indexs : ",randomIndex());
+
+              try {
+                const jsonArr = [newPlace,newPlace2,newPlace3]
+                const writeJson = JSON.stringify(jsonArr);
+                
+                AsyncStorage.setItem('cachedPlaces', writeJson);
+        
+             } catch (e) {
+               // saving error
+             }
+
+              return [newPlace,newPlace2,newPlace3];
+
+            });
+            }
+    
+          });
+          
+          return
+        }
+        else {
+          console.log("hello");
+          setCurrentPlaces([actualjsonValue])
+        }
+      } catch (e) {
+        // error reading value
+      }
+
+    };
+    
+    fetchNearbyPlaces();
+   
+    
+  }, []);
+
+  
+const showPois = () => {
+    // return nearbyPlaces.map((place, index) => {
+    //   return <Marker style={styles.markers} title={place.name} key={index} coordinate={place.location}   pinColor='green'/>
+    // });
+    //
+  return currentPlaces.map((place,index) => {
+    return <Marker title={place.name} key={index}  coordinate={{
+      latitude : place.coordinates[1], 
+      longitude : place.coordinates[0]
+    }}   pinColor='green'/>
+  })
+    
+  };
+
 
   const getUserLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -78,7 +114,7 @@ const Map = () => {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
       });
-      console.log("Please grant location permissions");
+      console.log("Please grant location permission");
     }
     
   };
@@ -113,7 +149,8 @@ const Map = () => {
               longitudeDelta: 0.015,
             }}
           >
-             {showPois()}
+            
+           {currentPlaces.length !== 0 ?   showPois()    : null}
         
             <Marker coordinate={userLocation} title="Your location"/>
           </MapView>
@@ -131,12 +168,6 @@ const Map = () => {
           <Text>Camera</Text>{" "}
         </Link>
       </Pressable>
-
-      <SelectList 
-        setSelected={(val) => setSelected(val)} 
-        data={data} 
-        save="value"
-    />
     </>
   );
 };

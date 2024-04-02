@@ -10,14 +10,17 @@ import {
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import styles from "../styling/styles";
-import { FIREBASE_APP, FIREBASE_AUTH } from "../firebaseConfig";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { fetchPlaces } from "../utils/geoapify";
+import { addDoc, collection } from "firebase/firestore";
 
 const SignUpScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [postCode, setPostCode] = useState("");
+  const [userPlaces, setUserPlaces] = useState([])
   const router = useRouter();
 
   const registerUser = async () => {
@@ -36,8 +39,17 @@ const SignUpScreen = () => {
         password
       );
       const user = userCredentials.user;
-      console.log(user);
-      router.push("/map");
+      const userPlaces = await fetchPlaces(postCode);
+
+      const userData = await addDoc(collection(FIREBASE_DB, "users"), {
+        username: username,
+        email: email,
+        postCode: postCode,
+        places: userPlaces,
+      });
+      setUserPlaces(userData)
+      console.log(userPlaces);
+      router.navigate("/map");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
