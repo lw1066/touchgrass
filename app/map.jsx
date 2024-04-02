@@ -27,7 +27,6 @@ const Map = () => {
   useEffect(() => {
 
 
-
     const randomIndex = () => {
       return Math.floor(Math.random() * 100);
     };
