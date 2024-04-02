@@ -1,14 +1,73 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, View, Text, Pressable , FlatList } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import "expo-dev-client";
 import { Link } from "expo-router";
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
+import { SelectList } from 'react-native-dropdown-select-list'
+
 
 const Map = () => {
   const [userLocation, setUserLocation] = useState();
   const [permissionStatus, setPermissionStatus] = useState();
+  const [nearbyPlaces, setNearbyPlaces] = useState([]);
+  
+  const [selected, setSelected] = useState("");
+
+   console.log("select -->",selected);
+
+  
+  const data = [
+      {key:'commercial.supermarket', value:'commercial.supermarket', disabled:false},
+      {key:'catering.restaurant,catering.cafe', value:'catering.restaurant,catering.cafe', disabled:false},
+  ]
+ 
+ //console.log(userLocation);
+
+  //console.log("this is nearbyPlaces",nearbyPlaces);
+
+  const showPois = () => {
+    return nearbyPlaces.map((place, index) => {
+      return <Marker style={styles.markers} title={place.name} key={index} coordinate={place.location}   pinColor='green'/>
+    });
+  };
+
+  const fetchNearbyPlaces = async (longitude , latitude, categories) => {
+    const apiKey = '8c4b8ef0c8334c7fbd0782c94e1fe1aa'; 
+    
+    var fetch = require('node-fetch');
+    var requestOptions = {
+      method: 'GET',
+    };
+    
+    fetch(`https://api.geoapify.com/v2/places?categories=${categories}&bias=proximity:${longitude},${latitude}&limit=3&apiKey=8c4b8ef0c8334c7fbd0782c94e1fe1aa`, requestOptions)
+    .then(response => response.json())
+      .then((results) => {
+        const data = results;
+       // console.log("api results", data);
+       const placesData = data.features.map(feature => ({
+        name: feature.properties.name,
+        location: {
+          latitude: feature.geometry.coordinates[1],
+          longitude: feature.geometry.coordinates[0]
+        }
+      }));
+      
+      setNearbyPlaces(placesData);
+      })
+     
+  };
+
+  useEffect(() => {
+    // const long = -1.6885046;
+    // const lat = 53.8065151
+
+    if (userLocation && selected) {
+      const { latitude, longitude } = userLocation;
+      fetchNearbyPlaces(longitude, latitude, selected);
+    }
+  }, [userLocation, selected]);
 
   const getUserLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -21,6 +80,7 @@ const Map = () => {
       });
       console.log("Please grant location permissions");
     }
+    
   };
 
   // const showTrophyLocations = () => {
@@ -49,11 +109,13 @@ const Map = () => {
             initialRegion={{
               latitude: userLocation.latitude,
               longitude: userLocation.longitude,
-              latitudeDelta: 0.0017,
-              longitudeDelta: 0.001,
+              latitudeDelta: 0.0035,
+              longitudeDelta: 0.015,
             }}
           >
-            <Marker coordinate={userLocation} />
+             {showPois()}
+        
+            <Marker coordinate={userLocation} title="Your location"/>
           </MapView>
         ) : (
           <Text>
@@ -62,12 +124,19 @@ const Map = () => {
           </Text>
         )}
       </View>
+      
       <Pressable style={styles.button} onPress={() => console.log()}>
         <Link href="/AR">
           {" "}
           <Text>Camera</Text>{" "}
         </Link>
       </Pressable>
+
+      <SelectList 
+        setSelected={(val) => setSelected(val)} 
+        data={data} 
+        save="value"
+    />
     </>
   );
 };
@@ -100,6 +169,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: "blue",
   },
+  markers : {
+    color: "blue"
+  }
 });
 
 export default Map;
