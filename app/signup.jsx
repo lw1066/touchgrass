@@ -10,23 +10,30 @@ import {
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import styles from "../styling/styles";
-import { FIREBASE_APP, FIREBASE_AUTH } from "../firebaseConfig";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { fetchPlaces } from "../utils/geoapify";
+import { addDoc, collection } from "firebase/firestore";
+import PulsingLogo from "../components/PulsingLogo";
 
 const SignUpScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [postCode, setPostCode] = useState("");
+  const [userPlaces, setUserPlaces] = useState([])
+  const [creatingUser, setCreatingUser] = useState(false)
   const router = useRouter();
 
   const registerUser = async () => {
+    setCreatingUser(true)
     if (!username || !password || !email || !postCode) {
       Alert.alert(
         "Registration failed",
         "Please enter a valid username and password",
         [{ text: "OK", onPress: () => console.log("OK Pressed") }]
       );
+      setCreatingUser(false)
       return;
     }
     try {
@@ -36,19 +43,30 @@ const SignUpScreen = () => {
         password
       );
       const user = userCredentials.user;
-      console.log(user);
-      router.push("/map");
+      const userPlaces = await fetchPlaces(postCode);
+
+      const userData = await addDoc(collection(FIREBASE_DB, "users"), {
+        username: username,
+        email: email,
+        postCode: postCode,
+        places: userPlaces,
+      });
+      setUserPlaces(userData)
+      console.log(userPlaces);
+      setCreatingUser(false)
+      router.navigate("/map");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(error.message);
       // Handle error
+      setCreatingUser(false)
       Alert.alert("Registration failed", errorMessage);
     }
   };
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require("../assets/icon.png")} />
+      <PulsingLogo creatingUser={creatingUser} />
       <Text style={styles.title}>Sign Up</Text>
       <View style={styles.inputView}>
         <TextInput

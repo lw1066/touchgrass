@@ -1,74 +1,73 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text, Pressable , FlatList } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Text, Pressable , Image } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import "expo-dev-client";
 import { Link } from "expo-router";
 import * as Location from "expo-location";
-import { useEffect, useState } from "react";
-import { SelectList } from 'react-native-dropdown-select-list'
-
-
+import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
+import { getDocs, collection } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import LogoutButton from "../components/Logout";
 const Map = () => {
   const [userLocation, setUserLocation] = useState();
   const [permissionStatus, setPermissionStatus] = useState();
-  const [nearbyPlaces, setNearbyPlaces] = useState([]);
-  
-  const [selected, setSelected] = useState("");
-
-   console.log("select -->",selected);
-
-  
-  const data = [
-      {key:'commercial.supermarket', value:'commercial.supermarket', disabled:false},
-      {key:'catering.restaurant,catering.cafe', value:'catering.restaurant,catering.cafe', disabled:false},
-  ]
- 
- //console.log(userLocation);
-
-  //console.log("this is nearbyPlaces",nearbyPlaces);
-
+  const [currentPlaces, setCurrentPlaces] = useState([]);
+  useEffect(() => {
+    const fetchNearbyPlaces = async () => {
+      const user = FIREBASE_AUTH.currentUser;
+      // get uid for asyc storage key
+      const uid = user ? user.uid : null;
+      try {
+        const jsonValue = await AsyncStorage.getItem(`cachedPlaces_${uid}`);
+        const actualJsonValue = jsonValue ? JSON.parse(jsonValue) : null;
+        if (!actualJsonValue) {
+          const querySnapshot = await getDocs(collection(FIREBASE_DB, "users"));
+          for (const doc of querySnapshot.docs) {
+            if (user.email === doc.data().email) {
+              const places = doc.data().places;
+              const copyOfPlaces = [...places];
+              const newPlace1 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
+              const newPlace2 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
+              const newPlace3 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
+              // Save to AsyncStorage
+              const jsonArr = [newPlace1, newPlace2, newPlace3];
+              await AsyncStorage.setItem(
+                `cachedPlaces_${uid}`,
+                JSON.stringify(jsonArr)
+              );
+              setCurrentPlaces([...jsonArr]);
+              break;
+            }
+          }
+        } else {
+          console.log("Retrieved places from AsyncStorage:", actualJsonValue);
+          setCurrentPlaces([...actualJsonValue]);
+        }
+      } catch (error) {
+        console.error("Error fetching places:", error);
+      }
+    };
+    fetchNearbyPlaces();
+  }, []);
+  const randomIndex = (max) => {
+    return Math.floor(Math.random() * max);
+  };
   const showPois = () => {
-    return nearbyPlaces.map((place, index) => {
-      return <Marker style={styles.markers} title={place.name} key={index} coordinate={place.location}   pinColor='green'/>
+    return currentPlaces.map((place, index) => {
+      return (
+        <Marker
+          title={place.name}
+          key={index}
+          coordinate={{
+            latitude: place.coordinates[1],
+            longitude: place.coordinates[0],
+          }}
+          image={require("../assets/pin.png")}
+           style={{ width: 48, height: 48 }}
+        />
+      );
     });
   };
-
-  const fetchNearbyPlaces = async (longitude , latitude, categories) => {
-    const apiKey = '8c4b8ef0c8334c7fbd0782c94e1fe1aa'; 
-    
-    var fetch = require('node-fetch');
-    var requestOptions = {
-      method: 'GET',
-    };
-    
-    fetch(`https://api.geoapify.com/v2/places?categories=${categories}&bias=proximity:${longitude},${latitude}&limit=3&apiKey=8c4b8ef0c8334c7fbd0782c94e1fe1aa`, requestOptions)
-    .then(response => response.json())
-      .then((results) => {
-        const data = results;
-       // console.log("api results", data);
-       const placesData = data.features.map(feature => ({
-        name: feature.properties.name,
-        location: {
-          latitude: feature.geometry.coordinates[1],
-          longitude: feature.geometry.coordinates[0]
-        }
-      }));
-      
-      setNearbyPlaces(placesData);
-      })
-     
-  };
-
-  useEffect(() => {
-    // const long = -1.6885046;
-    // const lat = 53.8065151
-
-    if (userLocation && selected) {
-      const { latitude, longitude } = userLocation;
-      fetchNearbyPlaces(longitude, latitude, selected);
-    }
-  }, [userLocation, selected]);
-
   const getUserLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     setPermissionStatus(status);
@@ -78,24 +77,9 @@ const Map = () => {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
       });
-      console.log("Please grant location permissions");
+      console.log("Please grant location permission");
     }
-    
   };
-
-  // const showTrophyLocations = () => {
-  //   return trophies.map((trophy, index) => {
-  //     return(
-  //       <Marker
-  //         key={index}
-  //         coordinate={trophy.location}
-  //         title={trophy.title}
-  //         description={trophy.description}
-  //       />
-  //     )
-  //   })
-  // };
-
   useEffect(() => {
     getUserLocation();
   }, []);
@@ -113,9 +97,13 @@ const Map = () => {
               longitudeDelta: 0.015,
             }}
           >
-             {showPois()}
-        
-            <Marker coordinate={userLocation} title="Your location"/>
+            {currentPlaces.length !== 0 ? showPois() : null}
+            <Marker
+              coordinate={userLocation}
+             image={require("../assets/currentLocation.png")}           
+              title="Your location"         
+            />
+              
           </MapView>
         ) : (
           <Text>
@@ -124,23 +112,16 @@ const Map = () => {
           </Text>
         )}
       </View>
-      
       <Pressable style={styles.button} onPress={() => console.log()}>
         <Link href="/AR">
           {" "}
           <Text>Camera</Text>{" "}
         </Link>
       </Pressable>
-
-      <SelectList 
-        setSelected={(val) => setSelected(val)} 
-        data={data} 
-        save="value"
-    />
+      <LogoutButton />
     </>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -169,9 +150,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: "blue",
   },
-  markers : {
+  markers: {
     color: "blue"
-  }
+  },
 });
-
 export default Map;
