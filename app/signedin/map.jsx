@@ -127,7 +127,7 @@ const Map = () => {
   useEffect(() => {
     getUserLocation()
 
-  }, [getUserLocation]
+  }, []
   );
   return (
     <>

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-
+import { ScoreProvider, useScore } from '../context/scoreContext';
 const ScoreBoard = () => {
-    const [score, setScore] = useState(10000)
+    const {score} = useScore()
 
     return (
         <View style={styles.container}>

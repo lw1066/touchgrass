@@ -12,6 +12,7 @@ import {
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, View, Pressable, Text } from "react-native";
+import { useScore } from "../../context/scoreContext";
 
 ViroMaterials.createMaterials({
   gold: {
@@ -37,11 +38,13 @@ ViroAnimations.registerAnimations({
 const TrophySceneAR = () => {
   const [showPoints, setShowPoints] = useState(false);
   const [showObject, setShowObject] = useState(true);
+  const { incrementScore } = useScore()
 
   const handleObjectClick = () => {
     setShowObject(false);
     setShowPoints(true);
     setTimeout(() => setShowPoints(false), 2500);
+    incrementScore()
   };
 
   return (
@@ -74,6 +77,8 @@ const TrophySceneAR = () => {
 };
 
 const AR = () => {
+  
+
   return (
     <>
       <ViroARSceneNavigator
