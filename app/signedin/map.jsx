@@ -12,72 +12,29 @@ const Map = () => {
   const [userLocation, setUserLocation] = useState();
   const [permissionStatus, setPermissionStatus] = useState();
   const [currentPlaces, setCurrentPlaces] = useState([]);
+  const [timeLeft, setTimeLeft] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    getUserLocation();
+    fetchNearbyPlaces();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    fetchNearbyPlaces();
+  }, []);
 
   function degreesToRadians(degrees) {
     return (degrees * Math.PI) / 180;
   }
-
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const earthRadiusKm = 6371;
-    const metersPerKilometer = 1000;
-    const dLat = degreesToRadians(lat2 - lat1);
-    const dLon = degreesToRadians(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(degreesToRadians(lat1)) *
-        Math.cos(degreesToRadians(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distanceInKm = earthRadiusKm * c;
-    const distanceInMeters = distanceInKm * metersPerKilometer;
-    return distanceInMeters;
-  }
-
-  useEffect(() => {
-    const fetchNearbyPlaces = async () => {
-      const user = FIREBASE_AUTH.currentUser;
-      // get uid for asyc storage key
-      const uid = user ? user.uid : null;
-      try {
-        const jsonValue = await AsyncStorage.getItem(`cachedPlaces_${uid}`);
-        const actualJsonValue = jsonValue ? JSON.parse(jsonValue) : null;
-        if (!actualJsonValue) {
-          const querySnapshot = await getDocs(collection(FIREBASE_DB, "users"));
-          for (const doc of querySnapshot.docs) {
-            if (user.email === doc.data().email) {
-              const places = doc.data().places;
-              const copyOfPlaces = [...places];
-              const newPlace1 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
-              const newPlace2 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
-              const newPlace3 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
-              // Save to AsyncStorage
-              const jsonArr = [newPlace1, newPlace2, newPlace3];
-              await AsyncStorage.setItem(
-                `cachedPlaces_${uid}`,
-                JSON.stringify(jsonArr)
-              );
-              setCurrentPlaces([
-                ...jsonArr,
-                { coordinates: [-0.054682, 51.3493916], name: "Test" },
-              ]);
-              break;
-            }
-          }
-        } else {
-          console.log("Retrieved places from AsyncStorage:", actualJsonValue);
-          setCurrentPlaces([
-            ...actualJsonValue,
-            { coordinates: [-0.054682, 51.3493916], name: "Test" },
-          ]);
-        }
-      } catch (error) {
-        console.error("Error fetching places:", error);
-      }
-    };
-    fetchNearbyPlaces();
-  }, []);
   const randomIndex = (max) => {
     return Math.floor(Math.random() * max);
   };
@@ -121,14 +78,85 @@ const Map = () => {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
       });
-    
     }
   };
-  useEffect(() => {
-    getUserLocation()
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const earthRadiusKm = 6371;
+    const metersPerKilometer = 1000;
+    const dLat = degreesToRadians(lat2 - lat1);
+    const dLon = degreesToRadians(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(degreesToRadians(lat1)) *
+        Math.cos(degreesToRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distanceInKm = earthRadiusKm * c;
+    const distanceInMeters = distanceInKm * metersPerKilometer;
+    return distanceInMeters;
+  }
 
-  }, []
-  );
+  const fetchNearbyPlaces = async () => {
+    const user = FIREBASE_AUTH.currentUser;
+    const uid = user ? user.uid : null;
+    try {
+      const jsonValue = await AsyncStorage.getItem(`cachedPlaces_${uid}`);
+      const actualJsonValue = jsonValue ? JSON.parse(jsonValue) : null;
+      if (!actualJsonValue) {
+        const querySnapshot = await getDocs(collection(FIREBASE_DB, "users"));
+        for (const doc of querySnapshot.docs) {
+          if (user.email === doc.data().email) {
+            const places = doc.data().places;
+            const copyOfPlaces = [...places];
+            const newPlace1 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
+            const newPlace2 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
+            const newPlace3 = copyOfPlaces[randomIndex(copyOfPlaces.length)];
+            // Save to AsyncStorage
+            const jsonArr = [newPlace1, newPlace2, newPlace3];
+            await AsyncStorage.setItem(
+              `cachedPlaces_${uid}`,
+              JSON.stringify(jsonArr)
+            );
+            setCurrentPlaces([
+              ...jsonArr,
+              { coordinates: [-0.054682, 51.3493916], name: "Test" },
+            ]);
+            break;
+          }
+        }
+      } else {
+        console.log("Retrieved places from AsyncStorage:", actualJsonValue);
+        setCurrentPlaces([
+          ...actualJsonValue,
+          { coordinates: [-0.054682, 51.3493916], name: "Test" },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching places:", error);
+    }
+  };
+
+  const calculateTimeLeft = () => {
+    const now = new Date();
+    const endOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59,
+      59,
+      999
+    );
+    const diff = endOfDay - now;
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
+
+
+
   return (
     <>
       <View style={styles.container}>
@@ -157,6 +185,7 @@ const Map = () => {
             {"\n"}Let's not wait for the grass to grow...
           </Text>
         )}
+        <Text style={styles.timeLeftText}>Time left: {timeLeft}</Text>
       </View>
       {/* <Pressable style={styles.button} onPress={() => console.log()}>
         <Link href="/signedin/AR">
@@ -197,6 +226,13 @@ const styles = StyleSheet.create({
   },
   markers: {
     color: "blue",
+  },
+  timeLeftText: {
+    position: "absolute",
+    bottom: 10,
+    alignSelf: "center",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 export default Map;
