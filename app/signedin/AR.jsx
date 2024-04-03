@@ -85,7 +85,7 @@ const AR = () => {
       />
       <View>
         <Pressable style={styles.button}>
-          <Link href="/map">
+          <Link href="/signedin/map">
             {" "}
             <Text>Map</Text>{" "}
           </Link>
