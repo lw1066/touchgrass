@@ -14,6 +14,7 @@ import { FIREBASE_DB, FIREBASE_AUTH } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { fetchPlaces } from "../utils/geoapify";
 import { addDoc, collection } from "firebase/firestore";
+import PulsingLogo from "../components/PulsingLogo";
 
 const SignUpScreen = () => {
   const [username, setUsername] = useState("");
@@ -21,15 +22,18 @@ const SignUpScreen = () => {
   const [email, setEmail] = useState("");
   const [postCode, setPostCode] = useState("");
   const [userPlaces, setUserPlaces] = useState([])
+  const [creatingUser, setCreatingUser] = useState(false)
   const router = useRouter();
 
   const registerUser = async () => {
+    setCreatingUser(true)
     if (!username || !password || !email || !postCode) {
       Alert.alert(
         "Registration failed",
         "Please enter a valid username and password",
         [{ text: "OK", onPress: () => console.log("OK Pressed") }]
       );
+      setCreatingUser(false)
       return;
     }
     try {
@@ -49,18 +53,20 @@ const SignUpScreen = () => {
       });
       setUserPlaces(userData)
       console.log(userPlaces);
+      setCreatingUser(false)
       router.navigate("/map");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(error.message);
       // Handle error
+      setCreatingUser(false)
       Alert.alert("Registration failed", errorMessage);
     }
   };
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require("../assets/icon.png")} />
+      <PulsingLogo creatingUser={creatingUser} />
       <Text style={styles.title}>Sign Up</Text>
       <View style={styles.inputView}>
         <TextInput
