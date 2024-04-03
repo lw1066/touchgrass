@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable , Image } from "react-native";
+import { StyleSheet, View, Text, Pressable, Image } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import "expo-dev-client";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import * as Location from "expo-location";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
@@ -12,6 +12,29 @@ const Map = () => {
   const [userLocation, setUserLocation] = useState();
   const [permissionStatus, setPermissionStatus] = useState();
   const [currentPlaces, setCurrentPlaces] = useState([]);
+  const router = useRouter();
+
+  function degreesToRadians(degrees) {
+    return (degrees * Math.PI) / 180;
+  }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const earthRadiusKm = 6371;
+    const metersPerKilometer = 1000;
+    const dLat = degreesToRadians(lat2 - lat1);
+    const dLon = degreesToRadians(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(degreesToRadians(lat1)) *
+        Math.cos(degreesToRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distanceInKm = earthRadiusKm * c;
+    const distanceInMeters = distanceInKm * metersPerKilometer;
+    return distanceInMeters;
+  }
+
   useEffect(() => {
     const fetchNearbyPlaces = async () => {
       const user = FIREBASE_AUTH.currentUser;
@@ -35,13 +58,19 @@ const Map = () => {
                 `cachedPlaces_${uid}`,
                 JSON.stringify(jsonArr)
               );
-              setCurrentPlaces([...jsonArr]);
+              setCurrentPlaces([
+                ...jsonArr,
+                { coordinates: [-0.054682, 51.3493916], name: "Test" },
+              ]);
               break;
             }
           }
         } else {
           console.log("Retrieved places from AsyncStorage:", actualJsonValue);
-          setCurrentPlaces([...actualJsonValue]);
+          setCurrentPlaces([
+            ...actualJsonValue,
+            { coordinates: [-0.054682, 51.3493916], name: "Test" },
+          ]);
         }
       } catch (error) {
         console.error("Error fetching places:", error);
@@ -52,6 +81,7 @@ const Map = () => {
   const randomIndex = (max) => {
     return Math.floor(Math.random() * max);
   };
+
   const showPois = () => {
     return currentPlaces.map((place, index) => {
       return (
@@ -63,7 +93,21 @@ const Map = () => {
             longitude: place.coordinates[0],
           }}
           image={require("../../assets/pin.png")}
-           style={{ width: 48, height: 48 }}
+          style={{ width: 48, height: 48 }}
+          onPress={() => {
+            if (
+              calculateDistance(
+                userLocation.latitude,
+                userLocation.longitude,
+                place.coordinates[1],
+                place.coordinates[0]
+              ) < 100
+            ) {
+              router.push("/signedin/AR");
+            } else {
+              console.log(`Youre too far`);
+            }
+          }}
         />
       );
     });
@@ -77,12 +121,15 @@ const Map = () => {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
       });
-      console.log("Please grant location permission");
+      console.log('testing')
     }
   };
   useEffect(() => {
-    getUserLocation();
-  }, []);
+    getUserLocation()
+    // const interval = setInterval(getUserLocation, 6000)
+    // return () => { clearInterval(interval)}
+  }, [getUserLocation]
+  );
   return (
     <>
       <View style={styles.container}>
@@ -98,12 +145,12 @@ const Map = () => {
             }}
           >
             {currentPlaces.length !== 0 ? showPois() : null}
+
             <Marker
               coordinate={userLocation}
-             image={require("../../assets/currentLocation.png")}           
-              title="Your location"         
+              image={require("../../assets/currentLocation.png")}
+              title="Your location"
             />
-              
           </MapView>
         ) : (
           <Text>
@@ -113,12 +160,11 @@ const Map = () => {
         )}
       </View>
       {/* <Pressable style={styles.button} onPress={() => console.log()}>
-        <Link href="/AR">
+        <Link href="/signedin/AR">
           {" "}
           <Text>Camera</Text>{" "}
         </Link>
       </Pressable> */}
-     
     </>
   );
 };
@@ -151,7 +197,7 @@ const styles = StyleSheet.create({
     color: "blue",
   },
   markers: {
-    color: "blue"
+    color: "blue",
   },
 });
 export default Map;
