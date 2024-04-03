@@ -9,10 +9,12 @@ import {
   ViroAnimations,
   ViroARCamera,
 } from "@viro-community/react-viro";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, View, Pressable, Text } from "react-native";
 import { useScore } from "../../context/scoreContext";
+import { useTrophy } from "../../context/trophyContext";
+import { removeEntryByCoordinates } from "../../utils/deleteTrophy";
 
 ViroMaterials.createMaterials({
   gold: {
@@ -38,13 +40,17 @@ ViroAnimations.registerAnimations({
 const TrophySceneAR = () => {
   const [showPoints, setShowPoints] = useState(false);
   const [showObject, setShowObject] = useState(true);
-  const { incrementScore } = useScore()
+  const { incrementScore } = useScore();
+  const { trophy, setTrophy } = useTrophy();
+  const router = useRouter();
 
   const handleObjectClick = () => {
     setShowObject(false);
     setShowPoints(true);
     setTimeout(() => setShowPoints(false), 2500);
-    incrementScore()
+    incrementScore();
+    removeEntryByCoordinates(trophy);
+    setTimeout(() => router.navigate("/signedin/map"), 3500);
   };
 
   return (
@@ -77,8 +83,6 @@ const TrophySceneAR = () => {
 };
 
 const AR = () => {
-  
-
   return (
     <>
       <ViroARSceneNavigator
@@ -88,14 +92,14 @@ const AR = () => {
         }}
         style={{ flex: 1 }}
       />
-      <View>
+      {/* <View>
         <Pressable style={styles.button}>
           <Link href="/signedin/map">
             {" "}
             <Text>Map</Text>{" "}
           </Link>
         </Pressable>
-      </View>
+      </View> */}
     </>
   );
 };
