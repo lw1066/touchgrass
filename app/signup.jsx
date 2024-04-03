@@ -54,7 +54,7 @@ const SignUpScreen = () => {
       setUserPlaces(userData)
       console.log(userPlaces);
       setCreatingUser(false)
-      router.navigate("/map");
+      router.navigate("/signedin/map");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;

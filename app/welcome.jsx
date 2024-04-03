@@ -13,6 +13,7 @@ import { Link, useRouter } from "expo-router";
 import styles from "../styling/styles";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../firebaseConfig";
+import PulsingLogo from "../components/PulsingLogo";
 
 const WelcomeScreen = () => {
   const [email, setEmail] = useState("");
@@ -38,14 +39,13 @@ const WelcomeScreen = () => {
         email,
         password
       );
-      if (user) router.push("/map");
+      if (user) router.push("/signedin/map");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(error.message);
       setEmail("");
       setPassword("");
-      // router.push("/welcome");
       Alert.alert(
         "Sign in failed",
         "Please enter a valid username and password",
@@ -59,11 +59,11 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require("../assets/icon.png")} />
+
+
+      <PulsingLogo creatingUser={isLoading} />
 
       <Text style={styles.title}>Touch Grass</Text>
-
-      {isLoading && <Text>Signing In...</Text>}
 
       <View style={styles.inputView}>
         <TextInput

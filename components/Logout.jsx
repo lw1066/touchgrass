@@ -1,7 +1,6 @@
 import React from "react";
-import { Alert, Pressable, Text } from "react-native";
+import { Alert, Pressable, Text , View} from "react-native";
 import { signOut } from "firebase/auth";
-import { router } from "expo-router";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { useRouter } from "expo-router";
 import styles from "../styling/styles";
@@ -27,15 +26,20 @@ const LogoutButton = () => {
   };
 
   return (
-    <Pressable
-      style={({ pressed }) => [
-        { backgroundColor: pressed ? "yellow" : "lightgreen" },
-        styles.button,
-      ]}
-      onPress={handleLogOut}
-    >
-      <Text style={styles.text}>Log out</Text>
-    </Pressable>
+    <View style = {{  position: 'absolute' , bottom : -2, left : -2.5, zIndex : 1}}>
+ <Pressable 
+    style={({ pressed }) => [
+      { backgroundColor: pressed ? "yellow" : "lightgreen"  , width : "100%" },
+      
+      styles.logoutButton,
+    ]}
+    onPress={handleLogOut}
+  >
+    <Text style={styles.text  }>Log out</Text>
+  </Pressable>
+
+    </View>
+   
   );
 };
 

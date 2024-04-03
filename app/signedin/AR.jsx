@@ -15,7 +15,7 @@ import { StyleSheet, View, Pressable, Text } from "react-native";
 
 ViroMaterials.createMaterials({
   gold: {
-    diffuseTexture: require("../assets/ARObj/gold.jpg"),
+    diffuseTexture: require("../../assets/ARObj/gold.jpg"),
   },
 });
 
@@ -48,7 +48,7 @@ const TrophySceneAR = () => {
     <ViroARScene>
       {showObject && (
         <Viro3DObject
-          source={require("../assets/ARObj/star.obj")}
+          source={require("../../assets/ARObj/star.obj")}
           highAccuracyEvents={true}
           position={[0, 0, -1]}
           scale={[0.02, 0.02, 0.02]}

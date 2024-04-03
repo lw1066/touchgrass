@@ -37,7 +37,15 @@ const styles = StyleSheet.create({
     elevation: 3,
     margin: 10,
   },
-
+  logoutButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 4,
+    elevation: 3,
+    margin: 10,
+  },
 
   text: {
     fontSize: 16,
