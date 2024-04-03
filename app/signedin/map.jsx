@@ -4,10 +4,10 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import "expo-dev-client";
 import { Link } from "expo-router";
 import * as Location from "expo-location";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import LogoutButton from "../components/Logout";
+
 const Map = () => {
   const [userLocation, setUserLocation] = useState();
   const [permissionStatus, setPermissionStatus] = useState();
@@ -62,7 +62,7 @@ const Map = () => {
             latitude: place.coordinates[1],
             longitude: place.coordinates[0],
           }}
-          image={require("../assets/pin.png")}
+          image={require("../../assets/pin.png")}
            style={{ width: 48, height: 48 }}
         />
       );
@@ -100,7 +100,7 @@ const Map = () => {
             {currentPlaces.length !== 0 ? showPois() : null}
             <Marker
               coordinate={userLocation}
-             image={require("../assets/currentLocation.png")}           
+             image={require("../../assets/currentLocation.png")}           
               title="Your location"         
             />
               
@@ -112,13 +112,13 @@ const Map = () => {
           </Text>
         )}
       </View>
-      <Pressable style={styles.button} onPress={() => console.log()}>
+      {/* <Pressable style={styles.button} onPress={() => console.log()}>
         <Link href="/AR">
           {" "}
           <Text>Camera</Text>{" "}
         </Link>
-      </Pressable>
-      <LogoutButton />
+      </Pressable> */}
+     
     </>
   );
 };
