@@ -121,13 +121,12 @@ const Map = () => {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
       });
-      console.log('testing')
+    
     }
   };
   useEffect(() => {
     getUserLocation()
-    // const interval = setInterval(getUserLocation, 6000)
-    // return () => { clearInterval(interval)}
+
   }, [getUserLocation]
   );
   return (
