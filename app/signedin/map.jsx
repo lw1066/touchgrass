@@ -18,9 +18,6 @@ const Map = () => {
   useEffect(() => {
     getUserLocation();
     fetchNearbyPlaces();
-  }, []);
-
-  useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
@@ -29,7 +26,11 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
-    fetchNearbyPlaces();
+    const interval = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   function degreesToRadians(degrees) {
