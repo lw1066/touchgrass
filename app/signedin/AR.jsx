@@ -41,7 +41,7 @@ const TrophySceneAR = () => {
   const [showPoints, setShowPoints] = useState(false);
   const [showObject, setShowObject] = useState(true);
   const [pointsToAdd, setPointsToAdd] = useState(100)
-  const { incrementScore } = useScore();
+  const { incrementScore, score } = useScore();
   const { trophy, setTrophy } = useTrophy();
   const router = useRouter();
 
@@ -50,7 +50,7 @@ const TrophySceneAR = () => {
     setShowPoints(true);
     setTimeout(() => setShowPoints(false), 2500);
     incrementScore(pointsToAdd);
-    removeEntryByCoordinates(trophy);
+    removeEntryByCoordinates(trophy, score);
     setTimeout(() => router.navigate("/signedin/map"), 3500);
   };
 

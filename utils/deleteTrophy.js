@@ -18,7 +18,7 @@ const getCachedPlaces = async () => {
   }
 };
 
-const removeEntryByCoordinates = async (coordinatesToRemove) => {
+const removeEntryByCoordinates = async (coordinatesToRemove, score) => {
   const user = FIREBASE_AUTH.currentUser;
   const uid = user ? user.uid : null;
   try {
