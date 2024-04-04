@@ -40,6 +40,7 @@ ViroAnimations.registerAnimations({
 const TrophySceneAR = () => {
   const [showPoints, setShowPoints] = useState(false);
   const [showObject, setShowObject] = useState(true);
+  const [pointsToAdd, setPointsToAdd] = useState(100)
   const { incrementScore } = useScore();
   const { trophy, setTrophy } = useTrophy();
   const router = useRouter();
@@ -48,7 +49,7 @@ const TrophySceneAR = () => {
     setShowObject(false);
     setShowPoints(true);
     setTimeout(() => setShowPoints(false), 2500);
-    incrementScore();
+    incrementScore(pointsToAdd);
     removeEntryByCoordinates(trophy);
     setTimeout(() => router.navigate("/signedin/map"), 3500);
   };
