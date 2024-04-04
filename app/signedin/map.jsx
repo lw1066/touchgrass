@@ -62,7 +62,6 @@ const Map = () => {
               );
               setCurrentPlaces([
                 ...jsonArr,
-                { coordinates: [-0.054682, 51.3493916], name: "Test" },
               ]);
               break;
             }
@@ -71,7 +70,7 @@ const Map = () => {
           console.log("Retrieved places from AsyncStorage:", actualJsonValue);
           setCurrentPlaces([
             ...actualJsonValue,
-            { coordinates: [-0.054682, 51.3493916], name: "Test" },
+           
           ]);
         }
       } catch (error) {
