@@ -38,7 +38,7 @@ const WelcomeScreen = () => {
         email,
         password
       );
-      if (user) router.push("/signedin/map");
+      if (user) router.navigate("/signedin/map");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
