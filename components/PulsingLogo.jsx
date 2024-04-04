@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Animated } from "react-native";
+import { Animated, Text } from "react-native";
 import styles from "../styling/styles";
 
 const PulsingLogo = ({ creatingUser }) => {
@@ -35,26 +35,32 @@ const PulsingLogo = ({ creatingUser }) => {
 
     // Cleanup function to stop the animation when component unmounts
     return () => stopPulseAnimation();
-  }, [creatingUser]); // Re-run effect when creatingUser changes
+  }, [creatingUser]);
 
-  // Return the animated image
   return (
-    <Animated.Image
-      style={[
-        styles.logo,
-        {
-          transform: [
-            {
-              scale: pulseAnimation.interpolate({
-                inputRange: [1, 1.2],
-                outputRange: [1, 1.2],
-              }),
-            },
-          ],
-        },
-      ]}
-      source={require("../assets/icon.png")}
-    />
+    <>
+      <Animated.Image
+        style={[
+          styles.logo,
+          {
+            transform: [
+              {
+                scale: pulseAnimation.interpolate({
+                  inputRange: [1, 1.2],
+                  outputRange: [1, 1.2],
+                }),
+              },
+            ],
+          },
+        ]}
+        source={require("../assets/icon.png")}
+      />
+      {creatingUser && (
+        <Text style={{ color: "green", textAlign: "center" }}>
+          Growing grass...
+        </Text>
+      )}
+    </>
   );
 };
 

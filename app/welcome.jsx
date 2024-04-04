@@ -21,7 +21,6 @@ const WelcomeScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-  
 
   const signInFunc = async () => {
     if (!email || !password) {
@@ -56,11 +55,8 @@ const WelcomeScreen = () => {
     setIsLoading(false);
   };
 
-
   return (
     <View style={styles.container}>
-
-
       <PulsingLogo creatingUser={isLoading} />
 
       <Text style={styles.title}>Touch Grass</Text>

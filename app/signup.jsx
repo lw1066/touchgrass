@@ -21,19 +21,19 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [postCode, setPostCode] = useState("");
-  const [userPlaces, setUserPlaces] = useState([])
-  const [creatingUser, setCreatingUser] = useState(false)
+  const [userPlaces, setUserPlaces] = useState([]);
+  const [creatingUser, setCreatingUser] = useState(false);
   const router = useRouter();
 
   const registerUser = async () => {
-    setCreatingUser(true)
+    setCreatingUser(true);
     if (!username || !password || !email || !postCode) {
       Alert.alert(
         "Registration failed",
         "Please enter a valid username and password",
         [{ text: "OK", onPress: () => console.log("OK Pressed") }]
       );
-      setCreatingUser(false)
+      setCreatingUser(false);
       return;
     }
     try {
@@ -51,16 +51,15 @@ const SignUpScreen = () => {
         postCode: postCode,
         places: userPlaces,
       });
-      setUserPlaces(userData)
-      console.log(userPlaces);
-      setCreatingUser(false)
+      setUserPlaces(userData);
+      setCreatingUser(false);
       router.navigate("/signedin/map");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(error.message);
       // Handle error
-      setCreatingUser(false)
+      setCreatingUser(false);
       Alert.alert("Registration failed", errorMessage);
     }
   };
