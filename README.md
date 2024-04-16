@@ -1,33 +1,15 @@
-# <span style="color:darkorange"> TouchGrass </span>
+# <span style="color:darkgreen"> TouchGrass </span>
 
-TouchGrass is a mobile application designed to help users reconnect with nature and improve their mental well-being by encouraging outdoor activities. Whether you're looking to explore nearby parks, go for a hike, or simply enjoy some time outdoors.
+TouchGrass is a mobile application to encourage users to explore their local area. Three trophies are randomly placed at interesting locations within a 5km radius of the location the user enters on sign-up. The user can then walk to those places to pick up the trophies using their device's camera. After they have collected all three, another three are dropped in new locations! In this way users are encourage to explore their local area and find the real treasures of new, exciting places in their neighbourhood.
 
-## <span style="color:lightgreen">Compatible devices</span>
-For a list of all compatible android devices please visit:
-[Compatible Devices](https://developers.google.com/ar/devices#google_play_devices)
+## <span style="color:lightgreen">Tech-Stack</span>
 
-Scroll down to the section **"Device List (Table)"**
+TouchGrass was developed using a custom expo build on React Native. The build allowed us to integrate ViroAR and Google maps to provide the front-end display. Geoaplify API handled providing interesting locations to drop trophies. Firebase authorization and real-time database took care of the back-end.
 
-## <span style="color:lightblue">Installation</span>
+We plan to secure sensitive API keys etc using Google cloud functions but have yet to implement this.
 
-To get started with TouchGrass, follow these steps:
+## <span style="color:lightgreen">Demo video</span>
 
-1. **Clone the Repository:** Clone this repository to your local machine using the following command:
+Unfortunately, a demo app is not available to play with as API keys etc remain unsecured. Take a look round the code but any keys you may find are inactive.
 
-`git clone https://github.com/justanotherchili/Touchgrass-Frontend.git`
-
-2. **Navigate to the git repo**: Use the "cd" command to navigate to the repo.
-
-3. **Run the installs**: Use the following command to install everything to your machine:
-```
-npm install
-```
-
-4. **Run the metro server, (ensure your phone is plugged in using a USB)**: Use the following command:
-```
-npm start
-```
-
-5. **Tap "a" to go into Android mode**: This will run the metro server in android mode and bundle the application.
-
-6. <span style="color:green"> **Run and Enjoy the app!** </span>
+If you'd like to see a video of the app in action and read a little more about it then please take a look at the [Demo Video](https://the-site-eight.vercel.app/touchgrass) on my site.
